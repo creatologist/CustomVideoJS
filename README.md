@@ -2,7 +2,7 @@
 Customize your own HTML5 video player! CustomVideoJS is built on top of [Video.js](http://videojs.com)
 
 ### View Examples
-[http://ChristopherMil.es/custom-videojs](http://ChristopherMil.es/custom-videojs)
+[http://christophermil.es/custom-videojs](http://ChristopherMil.es/custom-videojs)
 ```
 02/14/2014
    This repo is under development. Working on cleaning everything up and getting all example cases up.
