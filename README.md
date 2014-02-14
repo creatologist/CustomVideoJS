@@ -19,8 +19,8 @@ var videoPlayer = new CustomVideoJS( 'video-player' );
     
     videoPlayer.create({
 		inject: '#video-player-container',
-		playPauseBtn: '#play-pause-btn',
 		
+		// event listeners
 		play: function( player ) {...},
 		pause: function( player ) {...},
 		ready: function( player ) {...},
@@ -31,7 +31,7 @@ var videoPlayer = new CustomVideoJS( 'video-player' );
 ```
 ### Cue Markers + Segments
 ```javascript
-// marker + segment events
+// marker + segment event listeners
 + hit: function( player, marker ) {...},
 + hitFirst: function( player, marker ) {...},
 + srubbedOn: function( player, marker ) {...},
