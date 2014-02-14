@@ -34,7 +34,7 @@ var videoPlayer = new CustomVideoJS( 'video-player' );
 // marker + segment event listeners
 + hit: function( player, marker ) {...},
 + hitFirst: function( player, marker ) {...},
-+ srubbedOn: function( player, marker ) {...},
++ scrubbedOn: function( player, marker ) {...},
 + scrubbedOff: function( player, marker ) {...},
 + scrubbedOnDrop: function( player, marker ) {...}
 ```
