@@ -1,7 +1,7 @@
 # CustomVideoJS
 Customize your own HTML5 video player! CustomVideoJS is built on top of [Video.js](http://videojs.com)
 
-## Easy Implementation
+### Easy Implementation
 ```javascript
 var videoPlayer = new CustomVideoJS( 'video-player' );
     
@@ -19,5 +19,20 @@ var videoPlayer = new CustomVideoJS( 'video-player' );
 		buffering: function( player ) {...},
 		playing: function( player ) {...},
 		finishedPlaying: function( player ) {...}
+	});
+```
+
+### Cue Markers
+```javascript
+	// x > 1 = time based
+	// x < 1 = percentage based
+	
+	videoPlayer.addMarker( 6.2, {
+		foo: 'bar',
+		hit: function( player, marker ) {...},
+		hitFirst: function( player, marker ) {...},
+		scrubbedOn : function( player, marker ) {...},
+		scrubbedOff : function( player, marker ) {...},
+		scrubbedOnDrop : function( player, marker ) {...}
 	});
 ```
