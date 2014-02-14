@@ -21,15 +21,19 @@ var videoPlayer = new CustomVideoJS( 'video-player' );
 		finishedPlaying: function( player ) {...}
 	});
 ```
-
 ### Cue Markers + Segments
+..* hit
+..* hitFirst
+..* scrubbedOn
+..* scrubbedOff
+..* scrubbedOnDrop
 ```javascript
 	// marker + segment events
-	hit: function( player, marker ) {...},
-	hitFirst: function( player, marker ) {...},
-	scrubbedOn : function( player, marker ) {...},
-	scrubbedOff : function( player, marker ) {...},
-	scrubbedOnDrop : function( player, marker ) {...}
+	// hit: function( player, marker ) {...},
+	// hitFirst: function( player, marker ) {...},
+	// scrubbedOn : function( player, marker ) {...},
+	// scrubbedOff : function( player, marker ) {...},
+	// scrubbedOnDrop : function( player, marker ) {...}
 	
 	// x > 1 = time based
 	// x < 1 = percentage based
