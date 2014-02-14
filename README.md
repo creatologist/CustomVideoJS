@@ -7,9 +7,6 @@ Customize your own HTML5 video player! CustomVideoJS is built on top of [Video.j
 ### Easy Implementation
 ```javascript
 var videoPlayer = new CustomVideoJS( 'video-player' );
-    videoPlayer.autoplay = true;
-    videoPlayer.width = '100%';
-    videoPlayer.height = '100%';
     
     // add what formats you have, if the browser is missing the right format it'll use flash fallback
     videoPlayer.mp4( 'http://video-js.zencoder.com/oceans-clip.mp4' );
