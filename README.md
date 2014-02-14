@@ -22,11 +22,13 @@ var videoPlayer = new CustomVideoJS( 'video-player' );
 	});
 ```
 ### Cue Markers + Segments
+```
 ..* hit
 ..* hitFirst
 ..* scrubbedOn
 ..* scrubbedOff
 ..* scrubbedOnDrop
+```
 ```javascript
 	// marker + segment events
 	// hit: function( player, marker ) {...},
