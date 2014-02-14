@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html>
+	
+	<head>
+		<meta charset='utf-8'>
+		<meta name='viewport' content='width=device-width, initial-scale=1'>
+		
+		<title>CustomVideoJS: Markers Example</title>
+		
+		<link rel='stylesheet' href='/css/video-js.css'>
+		<link rel='stylesheet' href='/css/example.css'>
+		
+		<!--[if lt IE 9]>
+			<script>
+				document.createElement( 'video' );
+				document.createElement( 'audio' );
+			</script>
+		<![endif]-->
+		
+	</head>
+	
+	<body>
+		
+		<!-- DOM -->
+		
+		<div id='content'>
+			<div id='title'>CustomVideoJS: Markers</div>
+			<div id='video-player-container'></div>
+			<div id='video-player-over'>
+				<div id='marker-indicator'>Marker: <span></span></div>
+			</div>
+			<div id='video-player-controls'>
+				<div id='vpc-play-pause'>
+					<div id='vpc-pp-circle' class='playing'>
+						<div id='vpc-pp-play'></div>
+						<div id='vpc-pp-pause'></div>
+					</div>
+				</div>
+				<div id='vpc-main'>
+					<div id='vpc-bar'>
+						<div id='vpc-buffering-bar'>
+							<div id='vpc-buffering-bar-inner'></div>
+						</div>
+						<div id='vpc-markers'>
+							<div id='markerA' class='marker'></div>
+							<div id='markerB' class='marker'></div>
+							<div id='markerC' class='marker'></div>
+						</div>
+						<div id='vpc-scrubber'></div>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<!-- IMPORTS -->
+		
+		<script src='/js/jquery-1.9.1.min.js'></script>
+		<script src='/js/jquery-ui-1.9.2.custom.min.js'></script>
+		<script src='/js/jquery.easing.1.3.js'></script>
+		<script src='/js/jquery.ui.touch-punch.min.js'></script>
+		
+		<script src="/js/video.js"></script>
+		<script src='/js/custom-video.js'></script>
+		
+		<!-- EXAMPLE -->
+		
+		<script>
+			
+		var videoPlayer = new CustomVideoJS( 'video-player' );
+			videoPlayer.width = '100%';
+			videoPlayer.height = '100%';
+			
+			videoPlayer.autoplay = false;
+			
+			videoPlayer.mp4( 'http://video-js.zencoder.com/oceans-clip.mp4' );
+			videoPlayer.webm( 'http://video-js.zencoder.com/oceans-clip.webm' );
+			videoPlayer.ogv( 'http://video-js.zencoder.com/oceans-clip.ogv' );
+			
+			// set if < IE9 or if you want to use flash instead 
+			// videoPlayer.flash = true;
+			// videoPlayer.flash_bgcolor = '#79accd';
+			
+			videoPlayer.$bufferingBar = $( '#vpc-buffering-bar-inner' );
+			videoPlayer.$scrubber = $( '#vpc-scrubber' );
+			videoPlayer.$playIcon = $( '#vpc-pp-play' );
+			videoPlayer.$pauseIcon = $( '#vpc-pp-pause' );
+			
+			videoPlayer.barWidth = $( '#vpc-bar' ).width();
+			
+			videoPlayer.create({
+				
+				inject: '#video-player-container',
+				playPauseBtn: '#vpc-play-pause',
+				
+				play : function( player ) {
+					player.$playIcon.css( 'display', 'none' );
+					player.$pauseIcon.css( 'display', 'block' );
+				},
+				
+				pause : function( player ) {
+					player.$pauseIcon.css( 'display', 'none' );
+					player.$playIcon.css( 'display', 'block' );
+				},
+				
+				ready : function( player ) {
+					player.say( 'Ready' );
+				},
+				
+				buffering : function( player ) {
+					var p = Math.ceil( player.percentLoaded * 100 ) + '%';
+					player.$bufferingBar.css( 'width', p );
+				},
+				
+				playing : function( player ) {
+					var p = Math.floor( player.currentPercent * 100 ) + '%';
+					if ( player.scrubbing ) return;
+					player.$scrubber.css( 'left', p );
+				}
+				
+				
+			});
+			
+			videoPlayer.scrubber( '#vpc-scrubber', {
+				axis			: 'x',
+				containment		: 'parent',
+				
+				drag : function( event, ui ) {
+					var posX = videoPlayer.$scrubber.position().left;
+					var perc = posX / videoPlayer.barWidth;
+					
+					if ( videoPlayer.MOBILE && perc > videoPlayer.percentLoaded ) {
+						
+						videoPlayer.$scrubber.trigger( 'mouseup' );
+						
+						var l = videoPlayer.percentLoaded * videoPlayer.barWidth;
+						videoPlayer.$scrubber.css( { left: l });
+						return;
+					};
+					
+					videoPlayer.seekToPercent( perc );
+				},
+				
+				// scrubbedOnMarker + scrubbedOffMarker created below
+				
+				onMarker : function( player, marker ) {
+					// triggers when scrubbing on any marker
+					//player.scrubbedOnMarker();
+				},
+				
+				offMarker : function( player ) {
+					// triggers when scrubbing off a marker
+					//console.log( 'hii' );
+					player.scrubbedOffMarker();
+				}
+			});
+			
+			
+			
+			// MARKERS --------------------------------------------------------------
+			
+			videoPlayer.$markerIndicator = $( '#marker-indicator' );
+			
+			videoPlayer.hitMarker = function( marker ) {
+				$( '#marker-indicator span' ).html( 'hit: ' + marker.name );
+				this.$markerIndicator.css( 'background-color', '#a127a9' );
+				this.$markerIndicator.animate( { opacity: 1 }, 200, 'easeOutQuad', function() {
+					$( this ).delay( 1200 ).animate( { opacity: 0 }, 500, 'easeOutQuad');
+				});
+			};
+			
+			videoPlayer.scrubbedOnMarker = function( marker ) {
+				if ( marker ) $( '#marker-indicator span' ).html( 'scrubbedOn: ' + marker.name );
+				else $( '#marker-indicator span' ).html( 'scrubbedOn ANY MARKER' );
+				this.$markerIndicator.css( {
+					'background-color': '#a6c724',
+					opacity: 1
+				});
+			};
+			
+			videoPlayer.scrubbedOffMarker = function( marker ) {
+				if ( marker ) $( '#marker-indicator span' ).html( 'scrubbedOff: ' + marker.name );
+				else $( '#marker-indicator span' ).html( 'scrubbedOff ANY MARKER' );
+				
+				this.$markerIndicator.css( 'background-color', '#c7243b' );
+				this.$markerIndicator.delay( 200 ).animate( { opacity: 0 }, 500, 'easeOutQuad' );
+				
+			};
+			
+			videoPlayer.scrubbedOnDropMarker = function( marker ) {
+				this.stop();
+				
+				$( '#marker-indicator span' ).html( 'scrubbedOnDrop: ' + marker.name );
+				this.$markerIndicator.css( 'background-color', '#05c3f3' );
+				
+				this.$markerIndicator.animate( { opacity: 1, top: -20 }, 300, 'easeOutQuad', function() {
+					$( this ).delay( 200 ).animate( { opacity: 0, top: 0 }, 500, 'easeInQuad', function() {
+						videoPlayer.play();
+					} );
+				});
+				
+			};
+			
+			// x > 1 = time based
+			
+			// videoPlayer.duration = 46.5465;
+			// #markerB { left: 6.2 / 46.5465 }
+			
+			videoPlayer.addMarker( 6.2, {
+				name: 'markerA',
+				foo: 'bar',
+				hit: function( player, marker ) {
+					player.hitMarker( marker );
+					player.say( marker.name + ' - foo:' + marker.foo );
+				},
+				scrubbedOn : function( player, marker ) {
+					player.scrubbedOnMarker( marker );
+				},
+				scrubbedOff : function( player, marker ) {
+					//player.scrubbedOffMarker( marker );
+				},
+				scrubbedOnDrop : function( player, marker ) {
+					player.scrubbedOnDropMarker( marker );
+				}
+			});
+			
+			
+			// x < 1 = percentage based
+			// if ( x < 1 && time based ) add { timeIsPercent: false }
+			
+			videoPlayer.addMarker( .28, {
+				name: 'markerB',
+				hello: 'world',
+				hit: function( player, marker ) {
+					player.hitMarker( marker );
+					player.say( marker.name + ' - hello:' + marker.hello );
+					
+				},
+				scrubbedOn : function( player, marker ) {
+					player.scrubbedOnMarker( marker );
+				},
+				scrubbedOff : function( player, marker ) {
+					//player.scrubbedOffMarker( marker );
+				},
+				scrubbedOnDrop : function( player, marker ) {
+					player.scrubbedOnDropMarker( marker );
+				}
+				
+			});
+			
+			videoPlayer.addMarker( .5, {
+				name: 'markerC',
+				hello: 'world',
+				hit: function( player, marker ) {
+					player.hitMarker( marker );
+					player.say( marker.name + ' - hello:' + marker.hello );
+					
+				},
+				scrubbedOn : function( player, marker ) {
+					player.scrubbedOnMarker( marker );
+				},
+				scrubbedOff : function( player, marker ) {
+					//player.scrubbedOffMarker( marker );
+				},
+				scrubbedOnDrop : function( player, marker ) {
+					player.scrubbedOnDropMarker( marker );
+				}
+				
+			});
+			
+		</script>
+	</body>
+	
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
