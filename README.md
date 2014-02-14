@@ -10,14 +10,14 @@ var videoPlayer = new CustomVideoJS( 'video-player' );
     videoPlayer.ogv( 'http://video-js.zencoder.com/oceans-clip.ogv' );
     
     videoPlayer.create({
-	inject: '#video-player-container',
-	playPauseBtn: '#play-pause-btn',
-	
-	play: function( player ) {...},
-	pause: function( player ) {...},
-	ready: function( player ) {...},
-	buffering: function( player ) {...},
-	playing: function( player ) {...},
-	finishedPlaying: function( player ) {...}
+		inject: '#video-player-container',
+		playPauseBtn: '#play-pause-btn',
+		
+		play: function( player ) {...},
+		pause: function( player ) {...},
+		ready: function( player ) {...},
+		buffering: function( player ) {...},
+		playing: function( player ) {...},
+		finishedPlaying: function( player ) {...}
 	});
 ```
