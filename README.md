@@ -1,5 +1,6 @@
 # CustomVideoJS
-**_Customize your own HTML5 video player!_** CustomVideoJS is built on top of [Video.js](http://videojs.com) 
+*_Customize your own HTML5 video player!*
+> CustomVideoJS is built on top of [Video.js](http://videojs.com) 
 
 ## Easy Implementation
 ```javascript
