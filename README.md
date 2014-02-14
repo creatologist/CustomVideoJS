@@ -22,7 +22,7 @@ var videoPlayer = new CustomVideoJS( 'video-player' );
 	});
 ```
 ### Cue Markers + Segments
-```
+```javascript
 // marker + segment events
 + hit: function( player, marker ) {...},
 + hitFirst: function( player, marker ) {...},
