@@ -8,7 +8,7 @@ Customize your own HTML5 video player! CustomVideoJS is built on top of [Video.j
 ```javascript
 var videoPlayer = new CustomVideoJS( 'video-player' );
     
-    // add what formats you have, if the browser is missing the right format it'll use the flash player
+    // add what formats you have, if the browser is missing the right format it'll use flash fallback
     videoPlayer.mp4( 'http://video-js.zencoder.com/oceans-clip.mp4' );
     videoPlayer.webm( 'http://video-js.zencoder.com/oceans-clip.webm' );
     videoPlayer.ogv( 'http://video-js.zencoder.com/oceans-clip.ogv' );
