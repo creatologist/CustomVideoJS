@@ -1,5 +1,5 @@
 # CustomVideoJS
-Customize your own HTML5 video player! CustomVideoJS is built on top of [Video.js](http://videojs.com)
+Customize your own HTML5 & Flash video player! CustomVideoJS is built on top of [Video.js](http://videojs.com)
 
 ### Please Read
 02/14/2014 - This repo is under development. Working on cleaning everything up and getting all example cases up. Flash fallback tested and works down to IE8.
