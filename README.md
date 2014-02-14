@@ -23,19 +23,14 @@ var videoPlayer = new CustomVideoJS( 'video-player' );
 ```
 ### Cue Markers + Segments
 ```
-..* hit
-..* hitFirst
-..* scrubbedOn
-..* scrubbedOff
-..* scrubbedOnDrop
+// marker + segment events
++ hit: function( player, marker ) {...},
++ hitFirst: function( player, marker ) {...},
++ rubbedOn : function( player, marker ) {...},
++ scrubbedOff : function( player, marker ) {...},
++ scrubbedOnDrop : function( player, marker ) {...}
 ```
 ```javascript
-	// marker + segment events
-	// hit: function( player, marker ) {...},
-	// hitFirst: function( player, marker ) {...},
-	// scrubbedOn : function( player, marker ) {...},
-	// scrubbedOff : function( player, marker ) {...},
-	// scrubbedOnDrop : function( player, marker ) {...}
 	
 	// x > 1 = time based
 	// x < 1 = percentage based
