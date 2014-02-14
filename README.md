@@ -34,9 +34,9 @@ var videoPlayer = new CustomVideoJS( 'video-player' );
 // marker + segment events
 + hit: function( player, marker ) {...},
 + hitFirst: function( player, marker ) {...},
-+ rubbedOn : function( player, marker ) {...},
-+ scrubbedOff : function( player, marker ) {...},
-+ scrubbedOnDrop : function( player, marker ) {...}
++ srubbedOn: function( player, marker ) {...},
++ scrubbedOff: function( player, marker ) {...},
++ scrubbedOnDrop: function( player, marker ) {...}
 ```
 ```javascript
 	
@@ -50,8 +50,8 @@ var videoPlayer = new CustomVideoJS( 'video-player' );
 	// startTime, endTime, options
 	videoPlayer.addSegment( 2, 10, {
 		year: 2009,
-		scrubbedOn : function( player, marker ) {...},
-		scrubbedOff : function( player, marker ) {...}
+		scrubbedOn: function( player, marker ) {...},
+		scrubbedOff: function( player, marker ) {...}
 	});
 	
 	// endTime, options - add to end of last segment
