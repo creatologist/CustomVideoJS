@@ -37,10 +37,10 @@ var videoPlayer = new CustomVideoJS( 'video-player' );
 ### Cue Markers + Segments
 ```javascript
 // marker + segment event listeners
-+ hit: function( player, marker ) {...},
-+ hitFirst: function( player, marker ) {...},
-+ scrubbedOn: function( player, marker ) {...},
-+ scrubbedOff: function( player, marker ) {...},
++ hit: function( player, marker ) {...}
++ hitFirst: function( player, marker ) {...}
++ scrubbedOn: function( player, marker ) {...}
++ scrubbedOff: function( player, marker ) {...}
 + scrubbedOnDrop: function( player, marker ) {...}
 ```
 ```javascript
