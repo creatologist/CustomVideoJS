@@ -49,7 +49,9 @@ var videoPlayer = new CustomVideoJS( 'video-player' );
 	// x < 1 = percentage based
 	videoPlayer.addMarker( 6.2, {
 		foo: 'bar',
-		hit: function( player, marker ) {...}
+		hit: function( player, marker ) {
+			console.log( marker.foo ); // bar
+		}
 	});
 	
 	// startTime, endTime, options
