@@ -107,6 +107,8 @@ var CustomVideoJS = function( id ) {
 	this.onMarker			= false;
 	this._onMarker			= false;
 	
+	this.lastMarkerHit		= null;
+	
 	//
 	
 	this.segments			= [];
@@ -150,11 +152,12 @@ var CustomVideoJS = function( id ) {
    
 	    if( v.canPlayType ) {
 	    	for ( key in this.videoTypes ) {
-	    		if ( this.videoTypes[ key ] !== false && v.canPlayType( key ).replace(/no/, '') ) html5Video = true;
+	    		if ( this.videoTypes[ key ] !== false && v.canPlayType( key ).replace(/no/, '') ) {
+	    			html5Video = true;
+	    			if ( !this.videoType ) this.videoType = key.split( '/' )[1];
+	    		}
 	    	}
 	    }
-	    
-	    if ( !html5Video ) this.flash = true;
 		
 		if ( videojs._CustomVideoJS_IS_MOBILE != undefined ) {
 			this.MOBILE = videojs._CustomVideoJS_IS_MOBILE;
@@ -338,6 +341,12 @@ var CustomVideoJS = function( id ) {
 		} );
 		
         if ( !this.flash ) this._addListeners();
+        
+        if ( !html5Video ) {
+	    	this.flash = true;
+	    	this.videoType = 'flash';
+	    	this.handle.videoType( this );
+	    } else this.handle.videoType( this );
         
 	};
 	
@@ -609,6 +618,18 @@ var CustomVideoJS = function( id ) {
 	
 	this.handle = {
 		
+		videoType : function( self ) {
+			var browser = 'unknown';
+			
+			var ua = navigator.userAgent.toLowerCase();
+			if ( ua.indexOf( 'chrome' ) != -1 ) browser = 'chrome';
+			else if ( ua.indexOf( 'safari' ) != -1 ) browser = 'safari';
+			else if ( ua.indexOf( 'firefox' ) != -1 ) browser = 'firefox';
+			else if ( ua.indexOf( 'msie' ) != -1 ) browser = 'ie';
+			
+			self.options.videoType( self.videoType, browser );
+		},
+		
 		ready : function() {
 			if ( !this.customVideoJS.ready ) {
 				this.customVideoJS.ready = true;
@@ -796,11 +817,14 @@ var CustomVideoJSMarker = function( time, options, playerRef ) {
 				
 			if ( player.currentPercent > this.timePercent + .008 ) {
 				
-				if ( this._hit ) this._hit = false;
+				if ( this._hit ) {
+					 if ( player.lastMarkerHit == this ) player.lastMarkerHit = null; 
+					this._hit = false;
+				}
 				
 			} else if ( player.currentPercent > this.startTimeHit ) {
 				
-				if ( !this._hit ) {
+				if ( !this._hit && ( !player.lastMarkerHit || player.lastMarkerHit != this ) ) {
 					
 					if ( !this._hitFirst ){
 						this._hitFirst = true;
@@ -825,173 +849,34 @@ var CustomVideoJSMarker = function( time, options, playerRef ) {
 					
 					if ( !player._onMarker ) {
 						player._onMarker = true;
+						player.lastMarkerHit = this;
 						if ( player.scrubberOptions.onMarker ) player.scrubberOptions.onMarker( player, this );
 					}
 					if ( onStop ) {
-						//if ( this.scrubbedOnStop ) this.scrubbedOnStop( player, this );
+						player.lastMarkerHit = this;
 						if ( this.scrubbedOnDrop ) this.scrubbedOnDrop( player, this );
 					} else {
 						if ( !this._scrubbedOn ) {
+							player.lastMarkerHit = this;
 							this._scrubbedOn = true;
 							if ( this.scrubbedOn ) this.scrubbedOn( player, this );
 						}
 					}
 				} else {
 					if ( this._scrubbedOn ) {
+						if ( player.lastMarkerHit == this ) player.lastMarkerHit = null;
 						this._scrubbedOn = false;
 						if ( this.scrubbedOff ) this.scrubbedOff( player, this );
 					}
 				}
 			} else {
 				if ( this._scrubbedOn ) {
+					if ( player.lastMarkerHit == this ) player.lastMarkerHit = null;
 					this._scrubbedOn = false;
 					if ( this.scrubbedOff ) this.scrubbedOff( player, this );
 				}
 			}
 		};
-		
-	};
-	
-	this.initOLD = function( percentageChange, duration ) {
-		//console.log( 'percentageChange: ' + percentageChange );
-		//console.log( 'duration: ' + duration );
-		
-		if ( !this.percentage ) this.timePercent = this.time / duration;
-		else this.timePercent = this.time;
-		
-		//if ( this.playerRef.MOBILE && percentageChange < .005 ) percentageChange = .005;
-		if ( percentageChange < .007 ) percentageChange = .007;
-		//percentageChange = .01;
-		//if ( this.playerRef)
-		//if ( !playerRef.MOBILE && percentageChange > .01 ) percentageChange = .005;
-		
-		if ( this.percentage ) {
-			
-			this.startTimeHit = this.time - percentageChange;
-			
-			this.update = function( player ) {
-				
-				if ( player.currentPercent > this.time ) {
-					
-					if ( this._hit ) this._hit = false;
-					
-				} else if ( player.currentPercent > this.startTimeHit ) {
-					
-					if ( !this._hit ) {
-						
-						if ( !this._hitFirst ){
-							this._hitFirst = true;
-							if ( this.hitFirst ) this.hitFirst( player, this );
-						}
-						
-						this._hit = true;
-						if ( this.hit ) this.hit( player, this );
-					}
-					
-				}
-			};
-			
-			this.startTimeScrub = this.time - ( percentageChange * 1.5 );
-			this.endTimeScrub 	= this.time + percentageChange;
-			
-			this.checkScrub = function( player, onStop ) {
-				
-				if ( player.currentPercent > this.startTimeScrub ) {
-					if ( player.currentPercent < this.endTimeScrub ) {
-						player.onMarker = true;
-						
-						if ( !player._onMarker ) {
-							player._onMarker = true;
-							if ( player.scrubberOptions.onMarker ) player.scrubberOptions.onMarker( player, this );
-						}
-						if ( onStop ) {
-							if ( this.scrubbedOnStop ) this.scrubbedOnStop( player, this );
-						} else {
-							if ( !this._scrubbedOn ) {
-								this._scrubbedOn = true;
-								if ( this.scrubbedOn ) this.scrubbedOn( player, this );
-							}
-						}
-					} else {
-						if ( this._scrubbedOn ) {
-							this._scrubbedOn = false;
-							if ( this.scrubbedOff ) this.scrubbedOff( player, this );
-						}
-					}
-				} else {
-					if ( this._scrubbedOn ) {
-						this._scrubbedOn = false;
-						if ( this.scrubbedOff ) this.scrubbedOff( player, this );
-					}
-				}
-			};
-		} else {
-			
-			this.startTimeHit = this.time - ( percentageChange * duration );
-			//console.log( 'startTimeHit: ' + this.startTimeHit );
-			
-			this.update = function( player ) {
-				
-				if ( player.currentTime > this.time ) {
-					
-					if ( this._hit ) this._hit = false;
-					
-					
-				} else if ( player.currentTime > this.startTimeHit ) {
-					
-					if ( !this._hit ) {
-						
-						if ( !this._hitFirst ) {
-							this._hitFirst = true;
-							if ( this.hitFirst ) this.hitFirst( player, this );
-						}
-						
-						this._hit = true;
-						if ( this.hit ) this.hit( player, this );
-					}
-					
-				}
-			};
-			
-			this.startTimeScrub = this.time - ( percentageChange * 1.5 * duration );
-			this.endTimeScrub 	= this.time + ( percentageChange * duration );
-			
-			this.checkScrub = function( player, onStop ) {
-				
-				if ( player.currentTime > this.startTimeScrub ) {
-					if ( player.currentTime < this.endTimeScrub ) {
-						player.onMarker = true;
-						
-						if ( !player._onMarker ) {
-							player._onMarker = true;
-							if ( player.scrubberOptions.onMarker ) {
-								player.scrubberOptions.onMarker( player, this );
-							}
-						}
-						if ( onStop ) {
-							if ( this.scrubbedOnStop ) this.scrubbedOnStop( player, this );
-						} else {
-							if ( !this._scrubbedOn ) {
-								this._scrubbedOn = true;
-								if ( this.scrubbedOn ) this.scrubbedOn( player, this );
-							}
-							
-						}
-					} else {
-						if ( this._scrubbedOn ) {
-							this._scrubbedOn = false;
-							if ( this.scrubbedOff ) this.scrubbedOff( player, this );
-						}
-					}
-				} else {
-					if ( this._scrubbedOn ) {
-						this._scrubbedOn = false;
-						if ( this.scrubbedOff ) this.scrubbedOff( player, this );
-					}
-				}
-			};
-			
-		}
 		
 	};
 	
